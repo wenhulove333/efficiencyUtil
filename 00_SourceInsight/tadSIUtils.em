@@ -103,3 +103,40 @@ macro InsertCommentInSourceCode()
   sz = Cat(szCurLnText, "//@szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
   PutBufLine (hbuf, ln, sz)
 }
+
+macro InsertBracketCommentInSourceCode()
+{
+  szfeatureOrProntoName = getReg("featureOrProntoName")
+  szMyName = getReg("myName")
+  
+  SysTime = GetSysTime(1)
+  szYear=SysTime.Year
+  szMonth=SysTime.month
+  szDay=SysTime.day
+  
+  hbuf = GetCurrentBuf()
+  hwnd = GetCurrentWnd()
+  lnFirst = GetWndSelLnFirst(hwnd)
+  lnLast = GetWndSelLnLast(hwnd)
+
+  //get all the space at the beginning
+	ln = GetBufLnCur(hbuf)
+  szCurLnText = GetBufLine(hbuf, ln)
+  szCurLnFirstPos = 0
+  szCurLnLastPos = 0
+  len = strlen(szCurLnText)
+  while (szCurLnLastPos != len)
+  {
+    if (szCurLnText[szCurLnLastPos] != " ")
+    {
+      break;
+    }
+    szCurLnLastPos++;
+  }
+  
+  szCurLnTextSpace = strmid(szCurLnText, szCurLnFirstPos, szCurLnLastPos)
+  sz = Cat(szCurLnTextSpace, "//Begin: @szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
+  InsBufLine(hbuf, lnFirst, sz)
+  sz = Cat(szCurLnTextSpace, "//End: @szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
+  InsBufLine(hbuf, lnLast + 2, sz)
+}
