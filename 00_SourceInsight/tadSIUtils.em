@@ -119,9 +119,8 @@ macro InsertBracketCommentInSourceCode()
   lnFirst = GetWndSelLnFirst(hwnd)
   lnLast = GetWndSelLnLast(hwnd)
 
-  //get all the space at the beginning
-	ln = GetBufLnCur(hbuf)
-  szCurLnText = GetBufLine(hbuf, ln)
+  //get all the space at the beginning by the lines which are selected
+  szCurLnText = GetBufLine(hbuf, lnFirst)
   szCurLnFirstPos = 0
   szCurLnLastPos = 0
   len = strlen(szCurLnText)
@@ -135,8 +134,56 @@ macro InsertBracketCommentInSourceCode()
   }
   
   szCurLnTextSpace = strmid(szCurLnText, szCurLnFirstPos, szCurLnLastPos)
+  
+  //check whether the previous line which is relevant to the selected area
+  szPreviousLnTextToSel = GetBufLine(hbuf, lnFirst - 1)
+  lenPreviousLnTextToSel = strlen(szPreviousLnTextToSel)
+  szPosToPreviousLnTextToSel = 0
+  while (szPosToPreviousLnTextToSel != lenPreviousLnTextToSel)
+  {
+    if (szPreviousLnTextToSel[szPosToPreviousLnTextToSel] != " ")
+    {
+      break;
+    }
+    szPosToPreviousLnTextToSel++;
+  }
+  
+  //check whether the next line which is relevant to the selected area
+  szNextLnTextToSel = GetBufLine(hbuf, lnLast + 1)
+  lenNextLnTextToSel = strlen(szNextLnTextToSel)
+  szPosToNextLnTextToSel = 0
+  while (szPosToNextLnTextToSel != lenNextLnTextToSel)
+  {
+    if (szNextLnTextToSel[szPosToNextLnTextToSel] != " ")
+    {
+      break;
+    }
+    szPosToNextLnTextToSel++;
+  }
+  
   sz = Cat(szCurLnTextSpace, "//Begin: @szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
   InsBufLine(hbuf, lnFirst, sz)
+  
+  //if the previous line isn't blank line, insert the blank line.
+  if (szPosToPreviousLnTextToSel != lenPreviousLnTextToSel)
+  {
+    InsBufLine(hbuf, lnFirst, szCurLnTextSpace)
+  }
   sz = Cat(szCurLnTextSpace, "//End: @szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
-  InsBufLine(hbuf, lnLast + 2, sz)
+  if (szPosToPreviousLnTextToSel != lenPreviousLnTextToSel)
+  {
+    if (szPosToNextLnTextToSel != lenNextLnTextToSel)
+    {
+      InsBufLine(hbuf, lnLast + 3, szCurLnTextSpace)
+    }
+    InsBufLine(hbuf, lnLast + 3, sz)
+  }
+  else
+  {
+    if (szPosToNextLnTextToSel != lenNextLnTextToSel)
+    {
+      InsBufLine(hbuf, lnLast + 2, szCurLnTextSpace)
+    }
+    InsBufLine(hbuf, lnLast + 2, sz)
+  }
 }
