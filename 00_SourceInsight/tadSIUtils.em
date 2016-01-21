@@ -41,7 +41,7 @@ macro InsertFunctionHeader()
     {
       break;
     }
-    szCurLnLastPos++;
+    szCurLnLastPos = szCurLnLastPos + 1;
   }
   
   szCurLnTextSpace = strmid(szCurLnText, szCurLnFirstPos, szCurLnLastPos)
@@ -130,7 +130,7 @@ macro InsertBracketCommentInSourceCode()
     {
       break;
     }
-    szCurLnLastPos++;
+    szCurLnLastPos = szCurLnLastPos + 1;
   }
   
   szCurLnTextSpace = strmid(szCurLnText, szCurLnFirstPos, szCurLnLastPos)
@@ -145,7 +145,7 @@ macro InsertBracketCommentInSourceCode()
     {
       break;
     }
-    szPosToPreviousLnTextToSel++;
+    szPosToPreviousLnTextToSel = szPosToPreviousLnTextToSel + 1;
   }
   
   //check whether the next line which is relevant to the selected area
@@ -158,7 +158,7 @@ macro InsertBracketCommentInSourceCode()
     {
       break;
     }
-    szPosToNextLnTextToSel++;
+    szPosToNextLnTextToSel = szPosToNextLnTextToSel + 1;
   }
   
   sz = Cat(szCurLnTextSpace, "//Begin: @szfeatureOrProntoName@ @szMyName@ @szYear@.@szMonth@.@szDay@")
